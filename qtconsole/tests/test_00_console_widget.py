@@ -34,6 +34,41 @@ def qtconsole(qtbot):
     console.window.close()
 
 
+@pytest.mark.xfail(
+    sys.platform.startswith("linux"),
+    reason="Doesn't work without a window manager on Linux"
+)
+def test_history_complete(qtconsole, qtbot):
+    """
+    Test history complete widget
+    """
+    window = qtconsole.window
+    shell = window.active_frontend
+    control = shell._control
+
+    # Wait until the console is fully up
+    qtbot.waitUntil(
+        lambda: shell._prompt_html is not None, timeout=SHELL_TIMEOUT
+    )
+
+    with qtbot.waitSignal(shell.executed):
+        shell.execute("import time")
+
+    qtbot.keyClicks(control, "imp")
+
+    qtbot.keyClick(
+        control,
+        QtCore.Qt.Key_R,
+        modifier=QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
+    )
+    qtbot.waitUntil(lambda: shell._history_list_widget.isVisible())
+
+    qtbot.keyClick(shell._history_list_widget, QtCore.Qt.Key_Enter)
+    qtbot.waitUntil(lambda: not shell._history_list_widget.isVisible())
+
+    assert shell.input_buffer == "import time"
+
+
 @flaky(max_runs=3)
 @pytest.mark.parametrize(
     "debug", [True, False])

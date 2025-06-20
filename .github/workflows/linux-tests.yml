@@ -76,7 +76,7 @@ jobs:
           pip list
       - name: Run tests
         shell: bash -el {0}
-        run: xvfb-run --auto-servernum pytest -vv -s --full-trace --color=yes --cov=qtconsole qtconsole
+        run: xvfb-run --auto-servernum pytest -vv -s --color=yes --cov=qtconsole qtconsole
         env:
           QT_API: ${{ matrix.QT_LIB }}
           PYTEST_QT_API: ${{ matrix.QT_LIB }}
