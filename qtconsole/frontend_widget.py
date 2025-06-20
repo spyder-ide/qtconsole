@@ -142,6 +142,8 @@ class FrontendWidget(HistoryConsoleWidget, BaseFrontendMixin):
         lexer_class = import_item(self.lexer_class)
         return lexer_class()
 
+    shortcut_copy_raw = Unicode('Ctrl+Shift+C').tag(config=True)
+
     # Emitted when a user visible 'execute_request' has been submitted to the
     # kernel from the FrontendWidget. Contains the code to be executed.
     executing = QtCore.Signal(object)
@@ -190,11 +192,12 @@ class FrontendWidget(HistoryConsoleWidget, BaseFrontendMixin):
         # Configure actions.
         action = self._copy_raw_action
         action.setEnabled(False)
-        action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+C"))
+        action.setShortcut(self.shortcut_copy_raw)
         action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         action.triggered.connect(self.copy_raw)
         self.copy_available.connect(action.setEnabled)
         self.addAction(action)
+        self.copy_raw_action = action
 
         # Connect signal handlers.
         document = self._control.document()

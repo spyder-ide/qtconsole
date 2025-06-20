@@ -34,6 +34,84 @@ def qtconsole(qtbot):
     console.window.close()
 
 
+@pytest.fixture
+def qtconsole_with_argv(qtbot):
+    """Qtconsole fixture with custom argv support."""
+    console = JupyterQtConsoleApp()
+
+    def _qtconsole(argv=[]):
+        # Create a console
+        console.initialize(argv=argv)
+        console.window.confirm_exit = False
+
+        return console
+
+    yield _qtconsole
+
+    console.window.close()
+
+
+@pytest.mark.parametrize(
+    "shortcut_variable,shortcut_value",
+    [
+     ("full_screen", "Ctrl+Meta+F" if sys.platform == 'darwin' else "F11"),
+     ("copy", "Ctrl+C"),
+     ("paste", "Ctrl+V"),
+     ("cut", "Ctrl+X"),
+     ("clear", "Ctrl+L"),
+     ("new_kernel_tab", "Ctrl+T"),
+     ("slave_kernel_tab", "Ctrl+Shift+T"),
+     ("existing_kernel_tab", "Alt+T"),
+     ("save", "Ctrl+S"),
+     ("print", "Ctrl+P"),
+     ("undo", "Ctrl+Z"),
+     ("redo", "Ctrl+Y" if os.name == "nt" else "Ctrl+Shift+Z"),
+     ("copy_raw", "Ctrl+Shift+C"),
+     ("select_all", "Ctrl+A"),
+     ("ctrl_shift_m", "Ctrl+Shift+M"),
+     ("zoom_in", "Ctrl++"),
+     ("zoom_out", "Ctrl+-"),
+     ("reset_font_size", "Ctrl+0"),
+     ("interrupt_kernel", "Meta+C" if sys.platform == 'darwin' else "Ctrl+C"),
+     ("restart_kernel", "Meta+." if sys.platform == 'darwin' else "Ctrl+."),
+     ("minimize", "Ctrl+M"),
+     ("prev_tab", "Ctrl+Alt+Left" if sys.platform == 'darwin' else "Ctrl+PgUp"),
+     ("next_tab", "Ctrl+Alt+Right" if sys.platform == 'darwin' else "Ctrl+PgDown"),
+     ("rename_window", "Alt+R"),
+     ("rename_current_tab", "Ctrl+R"),
+     ("close", "Ctrl+F4" if os.name == "nt" else "Ctrl+W"),
+    ]
+)
+def test_shortcut_traitlets(qtconsole_with_argv, shortcut_variable, shortcut_value):
+    """ Verify that the traitlets related with shortcuts are initialized correctly.
+    """
+    # Simulate startup
+    test_args = ["test", ""]
+    console = qtconsole_with_argv(test_args)
+
+    # Check if the shortcuts traitlet has the expected value
+    assert getattr(console, f"shortcut_{shortcut_variable}") == shortcut_value
+
+
+@pytest.mark.parametrize(
+    "shortcut",
+    ["undo", "redo", "copy", "cut", "paste", "print", "clear", "close"]
+)
+def test_custom_shortcut_traitlets(qtconsole_with_argv, shortcut):
+    """ Verify that the shortcut traitlets can be customized.
+    """
+    # Simulate startup with a command-line argument that changes shortcuts
+    test_args = ["test", f"--JupyterQtConsoleApp.shortcut_{shortcut}=Ctrl+O"]
+
+    # Initialize the application with the simulated arguments
+    console = qtconsole_with_argv(test_args)
+    window = console.window
+
+    # Check if the shortcut traitlet has the expected value
+    assert getattr(console, f"shortcut_{shortcut}") == "Ctrl+O"
+    assert getattr(window, f"{shortcut}_action").shortcut().toString() == "Ctrl+O"
+
+
 @flaky(max_runs=3)
 @pytest.mark.parametrize(
     "debug", [True, False])

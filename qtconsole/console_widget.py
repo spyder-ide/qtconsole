@@ -171,6 +171,28 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
     # priority (when it has focus) over, e.g., window-level menu shortcuts.
     override_shortcuts = Bool(False)
 
+    shortcut_print = Unicode('Ctrl+P').tag(config=True)
+    shortcut_select_all = Unicode('Ctrl+A').tag(config=True)
+    shortcut_cut = Unicode().tag(config=True)
+    def _shortcut_cut_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Cut).toString()
+    shortcut_copy = Unicode().tag(config=True)
+    def _shortcut_copy_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Copy).toString()
+    shortcut_paste = Unicode().tag(config=True)
+    def _shortcut_paste_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Paste).toString()
+    shortcut_save = Unicode().tag(config=True)
+    def _shortcut_save_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Save).toString()
+    shortcut_zoom_in = Unicode().tag(config=True)
+    def _shortcut_zoom_in_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.ZoomIn).toString()
+    shortcut_zoom_out = Unicode().tag(config=True)
+    def _shortcut_zoom_out_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.ZoomOut).toString()
+    shortcut_reset_font_size = Unicode('Ctrl+0').tag(config=True)
+
     # ------ Custom Qt Widgets -------------------------------------------------
 
     # For other projects to easily override the Qt widgets used by the console
@@ -322,19 +344,19 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
         # Configure actions.
         action = QtWidgets.QAction('Print', None)
         action.setEnabled(True)
-        printkey = QtGui.QKeySequence(QtGui.QKeySequence.Print)
+        printkey = QtGui.QKeySequence(self.shortcut_print)
         if printkey.matches("Ctrl+P") and sys.platform != 'darwin':
             # Only override the default if there is a collision.
             # Qt ctrl = cmd on OSX, so the match gets a false positive on OSX.
-            printkey = "Ctrl+Shift+P"
-        action.setShortcut(printkey)
+            self.shortcut_print = "Ctrl+Shift+P"
+        action.setShortcut(self.shortcut_print)
         action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         action.triggered.connect(self.print_)
         self.addAction(action)
         self.print_action = action
 
         action = QtWidgets.QAction('Save as HTML/XML', None)
-        action.setShortcut(QtGui.QKeySequence.Save)
+        action.setShortcut(self.shortcut_save)
         action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         action.triggered.connect(self.export_html)
         self.addAction(action)
@@ -342,12 +364,12 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
 
         action = QtWidgets.QAction('Select All', None)
         action.setEnabled(True)
-        selectall = QtGui.QKeySequence(QtGui.QKeySequence.SelectAll)
+        selectall = QtGui.QKeySequence(self.shortcut_select_all)
         if selectall.matches("Ctrl+A") and sys.platform != 'darwin':
             # Only override the default if there is a collision.
             # Qt ctrl = cmd on OSX, so the match gets a false positive on OSX.
-            selectall = "Ctrl+Shift+A"
-        action.setShortcut(selectall)
+            self.shortcut_select_all = "Ctrl+Shift+A"
+        action.setShortcut(self.shortcut_select_all)
         action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         action.triggered.connect(self.select_all_smart)
         self.addAction(action)
@@ -355,7 +377,7 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
 
         self.increase_font_size = QtWidgets.QAction("Bigger Font",
                 self,
-                shortcut=QtGui.QKeySequence.ZoomIn,
+                shortcut=self.shortcut_zoom_in,
                 shortcutContext=QtCore.Qt.WidgetWithChildrenShortcut,
                 statusTip="Increase the font size by one point",
                 triggered=self._increase_font_size)
@@ -363,7 +385,7 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
 
         self.decrease_font_size = QtWidgets.QAction("Smaller Font",
                 self,
-                shortcut=QtGui.QKeySequence.ZoomOut,
+                shortcut=self.shortcut_zoom_out,
                 shortcutContext=QtCore.Qt.WidgetWithChildrenShortcut,
                 statusTip="Decrease the font size by one point",
                 triggered=self._decrease_font_size)
@@ -371,7 +393,7 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
 
         self.reset_font_size = QtWidgets.QAction("Normal Font",
                 self,
-                shortcut="Ctrl+0",
+                shortcut=self.shortcut_reset_font_size,
                 shortcutContext=QtCore.Qt.WidgetWithChildrenShortcut,
                 statusTip="Restore the Normal font size",
                 triggered=self.reset_font)
@@ -1146,15 +1168,15 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
 
         self.cut_action = menu.addAction('Cut', self.cut)
         self.cut_action.setEnabled(self.can_cut())
-        self.cut_action.setShortcut(QtGui.QKeySequence.Cut)
+        self.cut_action.setShortcut(self.shortcut_cut)
 
         self.copy_action = menu.addAction('Copy', self.copy)
         self.copy_action.setEnabled(self.can_copy())
-        self.copy_action.setShortcut(QtGui.QKeySequence.Copy)
+        self.copy_action.setShortcut(self.shortcut_copy)
 
         self.paste_action = menu.addAction('Paste', self.paste)
         self.paste_action.setEnabled(self.can_paste())
-        self.paste_action.setShortcut(QtGui.QKeySequence.Paste)
+        self.paste_action.setShortcut(self.shortcut_paste)
 
         anchor = self._control.anchorAt(pos)
         if anchor:

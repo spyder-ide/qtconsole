@@ -23,7 +23,6 @@ jobs:
       PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
       RUNNER_OS: 'ubuntu'
       COVERALLS_REPO_TOKEN: XWVhJf2AsO7iouBLuCsh0pPhwHy81Uz1v
-      COVERALLS_SERVICE_NAME: 'github-actions'
     strategy:
       fail-fast: false
       matrix:
@@ -83,4 +82,4 @@ jobs:
       - name: Upload coverage to coveralls
         if: matrix.PYTHON_VERSION == '3.8'
         shell: bash -el {0}
-        run: coveralls
+        run: coveralls --service=github-actions

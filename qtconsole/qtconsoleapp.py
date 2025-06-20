@@ -172,6 +172,104 @@ class JupyterQtConsoleApp(JupyterApp, JupyterConsoleApp):
         else:
             self.widget_factory = RichJupyterWidget
 
+    #--------------------------------------------------------------------------
+    # Shortcuts definition
+    #--------------------------------------------------------------------------
+
+    shortcut_new_kernel_tab = Unicode('Ctrl+T', config=True)
+    shortcut_slave_kernel_tab = Unicode('Ctrl+Shift+T', config=True)
+    shortcut_existing_kernel_tab = Unicode('Alt+T', config=True)
+    shortcut_close = Unicode().tag(config=True)
+    def _shortcut_close_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Close).toString()
+    shortcut_save = Unicode().tag(config=True)
+    def _shortcut_save_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Save).toString()
+    shortcut_print = Unicode('Ctrl+P', config=True)
+    shortcut_quit = Unicode().tag(config=True)
+    def _shortcut_quit_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Quit).toString()
+    shortcut_undo = Unicode().tag(config=True)
+    def _shortcut_undo_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Undo).toString()
+    shortcut_redo = Unicode().tag(config=True)
+    def _shortcut_redo_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Redo).toString()
+    shortcut_cut = Unicode().tag(config=True)
+    def _shortcut_cut_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Cut).toString()
+    shortcut_copy = Unicode().tag(config=True)
+    def _shortcut_copy_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Copy).toString()
+    shortcut_copy_raw = Unicode('Ctrl+Shift+C', config=True)
+    shortcut_paste = Unicode().tag(config=True)
+    def _shortcut_paste_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.Paste).toString()
+    shortcut_select_all = Unicode('Ctrl+A', config=True)
+    shortcut_ctrl_shift_m = Unicode('Ctrl+Shift+M', config=True)
+    shortcut_full_screen = Unicode().tag(config=True)
+    def _shortcut_full_screen_default(self):
+        fs_key = "Ctrl+Meta+F" if sys.platform == 'darwin' else "F11"
+        return fs_key
+    shortcut_zoom_in = Unicode().tag(config=True)
+    def _shortcut_zoom_in_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.ZoomIn).toString()
+    shortcut_zoom_out = Unicode().tag(config=True)
+    def _shortcut_zoom_out_default(self):
+        return QtGui.QKeySequence(QtGui.QKeySequence.ZoomOut).toString()
+    shortcut_reset_font_size = Unicode('Ctrl+0', config=True)
+    shortcut_clear = Unicode('Ctrl+L', config=True)
+    ctrl = "Meta" if sys.platform == 'darwin' else "Ctrl"
+    shortcut_interrupt_kernel = Unicode('Ctrl+C', config=True)
+    def _shortcut_interrupt_kernel_default(self):
+        return self.ctrl+'+C'
+    shortcut_restart_kernel = Unicode('Ctrl+Period', config=True)
+    def _shortcut_restart_kernel_default(self):
+        return self.ctrl+'+.'
+    shortcut_minimize = Unicode('Ctrl+M', config=True)
+    shortcut_prev_tab = Unicode().tag(config=True)
+    def _shortcut_prev_tab_default(self):
+        prev_key = "Ctrl+Alt+Left" if sys.platform == 'darwin' else "Ctrl+PgUp"
+        return prev_key
+    shortcut_next_tab = Unicode().tag(config=True)
+    def _shortcut_next_tab_default(self):
+        next_key = "Ctrl+Alt+Right" if sys.platform == 'darwin' else "Ctrl+PgDown"
+        return next_key
+    shortcut_rename_window = Unicode('Alt+R', config=True)
+    shortcut_rename_current_tab = Unicode('Ctrl+R', config=True)
+
+    def _get_shortcuts(self):
+        shortcuts = {
+            'shortcut_new_kernel_tab': self.shortcut_new_kernel_tab,
+            'shortcut_slave_kernel_tab': self.shortcut_slave_kernel_tab,
+            'shortcut_existing_kernel_tab': self.shortcut_existing_kernel_tab,
+            'shortcut_close': self.shortcut_close,
+            'shortcut_save': self.shortcut_save,
+            'shortcut_print': self.shortcut_print,
+            'shortcut_quit': self.shortcut_quit,
+            'shortcut_undo': self.shortcut_undo,
+            'shortcut_redo': self.shortcut_redo,
+            'shortcut_cut': self.shortcut_cut,
+            'shortcut_copy': self.shortcut_copy,
+            'shortcut_copy_raw': self.shortcut_copy_raw,
+            'shortcut_paste': self.shortcut_paste,
+            'shortcut_select_all': self.shortcut_select_all,
+            'shortcut_ctrl_shift_m': self.shortcut_ctrl_shift_m,
+            'shortcut_full_screen': self.shortcut_full_screen,
+            'shortcut_zoom_in': self.shortcut_zoom_in,
+            'shortcut_zoom_out': self.shortcut_zoom_out,
+            'shortcut_reset_font_size': self.shortcut_reset_font_size,
+            'shortcut_clear': self.shortcut_clear,
+            'shortcut_interrupt_kernel': self.shortcut_interrupt_kernel,
+            'shortcut_restart_kernel': self.shortcut_restart_kernel,
+            'shortcut_minimize': self.shortcut_minimize,
+            'shortcut_prev_tab': self.shortcut_prev_tab,
+            'shortcut_next_tab': self.shortcut_next_tab,
+            'shortcut_rename_window': self.shortcut_rename_window,
+            'shortcut_rename_current_tab': self.shortcut_rename_current_tab
+        }
+        return shortcuts
+
     # the factory for creating a widget
     widget_factory = Any(RichJupyterWidget)
 
@@ -286,7 +384,7 @@ class JupyterQtConsoleApp(JupyterApp, JupyterConsoleApp):
 
         self.widget.kernel_manager = self.kernel_manager
         self.widget.kernel_client = self.kernel_client
-        self.window = MainWindow(self.app,
+        self.window = MainWindow(self.app, shortcuts=self._get_shortcuts(),
                                 confirm_exit=self.confirm_exit,
                                 new_frontend_factory=self.new_frontend_master,
                                 slave_frontend_factory=self.new_frontend_slave,
