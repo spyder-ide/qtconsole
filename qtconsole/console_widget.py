@@ -490,7 +490,7 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
 
         elif etype == (
             QtCore.QEvent.Wheel
-            and self._control_key_down(event.modifiers()
+            and self._control_key_down(event.modifiers())
         ):
             if sys.platform != 'darwin':
                 if hasattr(event, 'angleDelta'):
