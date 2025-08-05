@@ -488,8 +488,8 @@ class ConsoleWidget(MetaQObjectHasTraits('NewBase', (LoggingConfigurable, superQ
                 pos = event.globalPos()
             QtWidgets.QToolTip.showText(pos, anchor)
 
-        elif etype == (
-            QtCore.QEvent.Wheel
+        elif (
+            etype == QtCore.QEvent.Wheel
             and self._control_key_down(event.modifiers())
         ):
             if sys.platform != 'darwin':
