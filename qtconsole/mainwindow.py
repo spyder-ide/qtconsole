@@ -822,8 +822,9 @@ else:
 """,
             True)
         self.active_frontend._append_plain_text(
-"""\n\nNote: Clearing the console after updating the syntax style
-is recommended for a better user experience.""")
+            "\n\nNote: Clearing the console is necessary to fully apply the "
+            "new syntax style you selected."
+        )
 
     def close_active_frontend(self):
         self.close_tab(self.active_frontend)
