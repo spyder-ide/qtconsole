@@ -45,6 +45,15 @@ jobs:
               REQUIREMENTS_FILE: 'requirements/environment.yml'
             - INSTALL_TYPE: 'pip'
               REQUIREMENTS_FILE: 'requirements/pip.yml'
+            - QT_LIB: 'pyqt5'
+              QT_DEPS: 'pyqt5'
+            - QT_LIB: 'pyqt6'
+              QT_DEPS: 'pyqt6!=6.4.0 pyqt6-qt6!=6.4.0'
+            - RUNNER_OS: 'ubuntu'
+              PYTHON_VERSION: '3.12'
+              COVERAGE: 'True'
+              COVERAGE_DEPS: 'coveralls pytest-cov'
+              PYTEST_COVERAGE_ARGS: '--cov=qtconsole'
         exclude:
             # Disable unsupported configurations
           - INSTALL_TYPE: 'conda'
@@ -95,20 +104,16 @@ jobs:
         if: matrix.INSTALL_TYPE == 'pip'
         run: |
           pip install -e .[test]
-          if [ ${{ matrix.QT_LIB }} = "pyqt6" ]; then
-            pip install pyqt6!=6.4.0 pyqt6-qt6!=6.4.0 coveralls pytest-cov
-          else
-            pip install ${{ matrix.QT_LIB }} coveralls pytest-cov
-          fi
+          pip install ${{ matrix.QT_DEPS }} ${{ matrix.COVERAGE_DEPS }}
       - name: Show environment information
         run: |
           conda info
           conda list
           pip list
       - name: Run tests
-        run: ${{ matrix.SPECIAL_INVOCATION }}pytest -vv -s --full-trace --color=yes --cov=qtconsole qtconsole
-      - name: Upload coverage to coveralls
-        if: matrix.RUNNER_OS == 'ubuntu' && matrix.PYTHON_VERSION == '3.12'
+        run: ${{ matrix.SPECIAL_INVOCATION }}pytest -vv -s --full-trace --color=yes ${{ matrix.PYTEST_COVERAGE_ARGS }} qtconsole
+      - name: Upload coverage to Coveralls
+        if: matrix.COVERAGE == 'True'
         run: coveralls
 
   check:
