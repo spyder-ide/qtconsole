@@ -46,8 +46,6 @@ jobs:
             # Disable unsupported configurations
           - INSTALL_TYPE: 'conda'
             QT_LIB: 'pyqt6'
-          - INSTALL_TYPE: 'conda'
-            PYTHON_VERSION: '3.8'
             # Prune the number of matrix jobs
           - RUNNER_OS: 'windows'
             PYTHON_VERSION: '3.10'
@@ -71,7 +69,7 @@ jobs:
             QT_LIB: 'pyqt6'
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Install Linux packages
         if: matrix.RUNNER_OS == 'ubuntu'
         run: |
@@ -84,9 +82,10 @@ jobs:
            auto-update-conda: false
            auto-activate-base: false
            miniforge-version: latest
-           mamba-version: "*"
+           mamba-version: '*'
            channels: conda-forge
            channel-priority: true
+           conda-remove-defaults: 'true'
            python-version: ${{ matrix.PYTHON_VERSION }}
            environment-file: ${{ matrix.REQUIREMENTS_FILE }}  # Need to set up dependencies in the same step due to https://github.com/conda-incubator/setup-miniconda/issues/371
       - name: Install dependencies with Pip
@@ -109,12 +108,12 @@ jobs:
         shell: bash -el {0}
         run: ${{ matrix.SPECIAL_INVOCATION }}pytest -vv -s --full-trace --color=yes --cov=qtconsole qtconsole
       - name: Upload coverage to coveralls
-        if: matrix.PYTHON_VERSION == '3.8'
+        if: matrix.RUNNER_OS == 'ubuntu' && matrix.PYTHON_VERSION == '3.12'
         shell: bash -el {0}
         run: coveralls
 
   check:
-    name: 'Check job status'
+    name: Check job status
     if: always()
 
     needs:
