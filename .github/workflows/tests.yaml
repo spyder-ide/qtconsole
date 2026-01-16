@@ -18,6 +18,9 @@ jobs:
     name: ${{ matrix.RUNNER_OS }} Py${{ matrix.PYTHON_VERSION }} - ${{ matrix.INSTALL_TYPE }} - ${{ matrix.QT_LIB }}
     runs-on: ${{ matrix.RUNNER_OS }}-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash -el {0}
     env:
       CI: 'True'
       QTCONSOLE_TESTING: 'True'
@@ -90,7 +93,6 @@ jobs:
            environment-file: ${{ matrix.REQUIREMENTS_FILE }}  # Need to set up dependencies in the same step due to https://github.com/conda-incubator/setup-miniconda/issues/371
       - name: Install dependencies with Pip
         if: matrix.INSTALL_TYPE == 'pip'
-        shell: bash -el {0}
         run: |
           pip install -e .[test]
           if [ ${{ matrix.QT_LIB }} = "pyqt6" ]; then
@@ -99,17 +101,14 @@ jobs:
             pip install ${{ matrix.QT_LIB }} coveralls pytest-cov
           fi
       - name: Show environment information
-        shell: bash -el {0}
         run: |
           conda info
           conda list
           pip list
       - name: Run tests
-        shell: bash -el {0}
         run: ${{ matrix.SPECIAL_INVOCATION }}pytest -vv -s --full-trace --color=yes --cov=qtconsole qtconsole
       - name: Upload coverage to coveralls
         if: matrix.RUNNER_OS == 'ubuntu' && matrix.PYTHON_VERSION == '3.12'
-        shell: bash -el {0}
         run: coveralls
 
   check:
