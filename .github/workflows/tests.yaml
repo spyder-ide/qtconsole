@@ -45,10 +45,6 @@ jobs:
               REQUIREMENTS_FILE: 'requirements/environment.yml'
             - INSTALL_TYPE: 'pip'
               REQUIREMENTS_FILE: 'requirements/pip.yml'
-            - QT_LIB: 'pyqt5'
-              QT_DEPS: 'pyqt5'
-            - QT_LIB: 'pyqt6'
-              QT_DEPS: 'pyqt6!=6.4.0 pyqt6-qt6!=6.4.0'
             - RUNNER_OS: 'ubuntu'
               PYTHON_VERSION: '3.13'
               COVERAGE: 'True'
@@ -92,7 +88,7 @@ jobs:
         if: matrix.INSTALL_TYPE == 'pip'
         run: |
           pip install -e .[test]
-          pip install ${{ matrix.QT_DEPS }} ${{ matrix.COVERAGE_DEPS }}
+          pip install ${{ matrix.QT_LIB }} ${{ matrix.COVERAGE_DEPS }}
       - name: Show environment information
         run: |
           conda info
