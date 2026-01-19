@@ -35,7 +35,7 @@ jobs:
       fail-fast: false
       matrix:
         RUNNER_OS: ['ubuntu', 'windows', 'macos']
-        PYTHON_VERSION: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        PYTHON_VERSION: ['3.9', '3.13']
         INSTALL_TYPE: ['conda', 'pip']
         QT_LIB: ['pyqt5', 'pyqt6']
         include:
@@ -50,7 +50,7 @@ jobs:
             - QT_LIB: 'pyqt6'
               QT_DEPS: 'pyqt6!=6.4.0 pyqt6-qt6!=6.4.0'
             - RUNNER_OS: 'ubuntu'
-              PYTHON_VERSION: '3.12'
+              PYTHON_VERSION: '3.13'
               COVERAGE: 'True'
               COVERAGE_DEPS: 'coveralls pytest-cov'
               PYTEST_COVERAGE_ARGS: '--cov=qtconsole'
@@ -60,21 +60,9 @@ jobs:
             QT_LIB: 'pyqt6'
             # Prune the number of matrix jobs
           - RUNNER_OS: 'windows'
-            PYTHON_VERSION: '3.10'
-          - RUNNER_OS: 'windows'
-            PYTHON_VERSION: '3.11'
-          - RUNNER_OS: 'windows'
-            PYTHON_VERSION: '3.12'
-          - RUNNER_OS: 'windows'
             INSTALL_TYPE: 'pip'
           - RUNNER_OS: 'windows'
             QT_LIB: 'pyqt6'
-          - RUNNER_OS: 'macos'
-            PYTHON_VERSION: '3.10'
-          - RUNNER_OS: 'macos'
-            PYTHON_VERSION: '3.11'
-          - RUNNER_OS: 'macos'
-            PYTHON_VERSION: '3.12'
           - RUNNER_OS: 'macos'
             INSTALL_TYPE: 'pip'
           - RUNNER_OS: 'macos'
