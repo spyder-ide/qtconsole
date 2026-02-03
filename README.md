@@ -6,6 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/jupyter/qtconsole/badge.svg?branch=master)](https://coveralls.io/github/jupyter/qtconsole?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/qtconsole/badge/?version=stable)](https://qtconsole.readthedocs.io/en/stable/)
 [![Google Group](https://img.shields.io/badge/-Google%20Group-lightgrey.svg)](https://groups.google.com/forum/#!forum/jupyter)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/jupyter/qtconsole/badge)](https://scorecard.dev/viewer/uri=github.com/jupyter/qtconsole)
 
 A rich Qt-based console for working with Jupyter kernels,
 supporting rich media output, session export, and more.
