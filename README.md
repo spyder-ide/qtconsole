@@ -1,7 +1,7 @@
 # Jupyter QtConsole
 
 [![Tests](https://github.com/spyder-ide/qtconsole/actions/workflows/tests.yaml/badge.svg)](https://github.com/spyder-ide/qtconsole/actions/workflows/tests.yaml)
-[![Coverage Status](https://coveralls.io/repos/github/jupyter/qtconsole/badge.svg?branch=master)](https://coveralls.io/github/jupyter/qtconsole?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/spyder-ide/qtconsole/badge.svg?branch=main)](https://coveralls.io/github/spyder-ide/qtconsole?branch=main)
 [![Documentation Status](https://readthedocs.org/projects/qtconsole/badge/?version=stable)](https://qtconsole.readthedocs.io/en/stable/)
 
 A rich Qt-based console for working with Jupyter kernels,
