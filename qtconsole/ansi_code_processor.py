@@ -18,6 +18,9 @@ from qtconsole.styles import dark_style
 # Constants and datatypes
 #-----------------------------------------------------------------------------
 
+# An action for cursor visibility requests
+CursorVisibilityAction = namedtuple('CursorVisibilityAction', ['action', 'visible'])
+
 # An action for erase requests (ED and EL commands).
 EraseAction = namedtuple('EraseAction', ['action', 'area', 'erase_to'])
 
@@ -42,7 +45,7 @@ BeepAction = namedtuple('BeepAction', ['action'])
 BackSpaceAction = namedtuple('BackSpaceAction', ['action'])
 
 # Regular expressions.
-CSI_COMMANDS = 'ABCDEFGHJKSTfmnsu'
+CSI_COMMANDS = 'ABCDEFGHJKSTfmnsuhl'
 CSI_SUBPATTERN = '\\[(.*?)([%s])' % CSI_COMMANDS
 OSC_SUBPATTERN = '\\](.*?)[\x07\x1b]'
 ANSI_PATTERN = ('\x01?\x1b(%s|%s)\x02?' % \
@@ -157,6 +160,13 @@ class AnsiCodeProcessor(object):
         params : sequence of integers, optional
             The parameter codes for the command.
         """
+
+        if command in ('h', 'l'):
+            if params == [25]:
+                visible = (command == 'h')
+                self.actions.append(
+                    CursorVisibilityAction('cursor-visibility', visible)
+                )
         if command == 'm':   # SGR - Select Graphic Rendition
             if params:
                 self.set_sgr_code(params)
