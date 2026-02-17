@@ -125,9 +125,14 @@ class AnsiCodeProcessor(object):
                 yield None
                 self.actions = []
             else:
-                params = [ param for param in groups[1].split(';') if param ]
                 if g0.startswith('['):
-                    # Case 1: CSI code.
+                    raw_params = groups[1] or ""
+                    # Handle private mode sequences
+                    if raw_params.startswith('?'):
+                        raw_params = raw_params[1:]
+
+                    params = [p for p in raw_params.split(';') if p]
+
                     try:
                         params = list(map(int, params))
                     except ValueError:
