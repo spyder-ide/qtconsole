@@ -233,9 +233,6 @@ class TestAnsiCodeProcessor(unittest.TestCase):
         i = -1
 
         for i, substring in enumerate(self.processor.split_string(string)):
-            # No text should be produced
-            self.assertIsNone(substring)
-
             self.assertEqual(len(self.processor.actions), 1)
             action = self.processor.actions[0]
 

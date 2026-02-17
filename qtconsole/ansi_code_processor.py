@@ -125,6 +125,7 @@ class AnsiCodeProcessor(object):
                 yield None
                 self.actions = []
             else:
+                params = []
                 if g0.startswith('['):
                     raw_params = groups[1] or ""
                     # Handle private mode sequences
