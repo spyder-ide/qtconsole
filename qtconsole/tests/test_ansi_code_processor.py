@@ -234,8 +234,8 @@ class TestAnsiCodeProcessor(unittest.TestCase):
 
         for i, substring in enumerate(self.processor.split_string(string)):
             self.assertEqual(len(self.processor.actions), 1)
-            action = self.processor.actions[0]
 
+            action = self.processor.actions[0]
             self.assertEqual(action.action, 'cursor-visibility')
 
             if i == 0:

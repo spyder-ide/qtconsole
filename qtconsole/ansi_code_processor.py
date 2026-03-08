@@ -19,7 +19,9 @@ from qtconsole.styles import dark_style
 #-----------------------------------------------------------------------------
 
 # An action for cursor visibility requests
-CursorVisibilityAction = namedtuple('CursorVisibilityAction', ['action', 'visible'])
+CursorVisibilityAction = namedtuple(
+    'CursorVisibilityAction', ['action', 'visible']
+)
 
 # An action for erase requests (ED and EL commands).
 EraseAction = namedtuple('EraseAction', ['action', 'area', 'erase_to'])
@@ -128,6 +130,7 @@ class AnsiCodeProcessor(object):
                 params = []
                 if g0.startswith('['):
                     raw_params = groups[1] or ""
+
                     # Handle private mode sequences
                     if raw_params.startswith('?'):
                         raw_params = raw_params[1:]
@@ -144,7 +147,7 @@ class AnsiCodeProcessor(object):
 
                 elif g0.startswith(']'):
                     # Case 2: OSC code.
-                    params = [ param for param in groups[1].split(';') if param ]
+                    params = [param for param in groups[1].split(';') if param]
                     self.set_osc_code(params)
 
         raw = string[start:]
