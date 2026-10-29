@@ -185,6 +185,7 @@ class JupyterQtConsoleApp(JupyterApp, JupyterConsoleApp):
         """
         kernel_manager = self.kernel_manager_class(
                                 connection_file=self._new_connection_file(),
+                                kernel_name=self.kernel_name,
                                 parent=self,
                                 autorestart=True,
         )
